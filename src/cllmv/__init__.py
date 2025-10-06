@@ -14,10 +14,12 @@ def generate(id: str, created: int, value: str) -> str:
     return _verifier.generate(id, created, value)
 
 
-def validate(id: str, created: int, value: str, expected_hash: str, salt: str) -> bool:
+def validate(
+    id: str, created: int, value: str, expected_hash: str, salt: str, model: str, revision: str
+) -> bool:
     if _verifier is None:
         init()
-    return _verifier.validate(id, created, value, expected_hash, salt)
+    return _verifier.validate(id, created, value, expected_hash, salt, model, revision)
 
 
 __all__ = [

@@ -20,6 +20,8 @@ class ChutesLLMVerifier:
             ctypes.c_char_p,
             ctypes.c_char_p,
             ctypes.c_char_p,
+            ctypes.c_char_p,
+            ctypes.c_char_p,
         ]
         self.lib.validate.restype = ctypes.c_int
 
@@ -31,7 +33,16 @@ class ChutesLLMVerifier:
         )
         return result.decode("utf-8")
 
-    def validate(self, id: str, created: int, value: str, expected_hash: str, salt: str) -> bool:
+    def validate(
+        self,
+        id: str,
+        created: int,
+        value: str,
+        expected_hash: str,
+        salt: str,
+        model: str,
+        revision: str,
+    ) -> bool:
         salt_ptr = salt.encode("utf-8")
         result = self.lib.validate(
             id.encode("utf-8"),
@@ -39,6 +50,8 @@ class ChutesLLMVerifier:
             value.encode("utf-8") if value else None,
             expected_hash.encode("utf-8"),
             salt_ptr,
+            model.encode("utf-8"),
+            revision.encode("utf-8"),
         )
         return bool(result)
 
