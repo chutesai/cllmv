@@ -65,7 +65,7 @@ def find_package_path(package_name: str) -> str | None:
     return None
 
 
-def compute_hash(package_path: str, lib_path: str) -> str | None:
+def compute_hash(package_name: str, package_path: str, lib_path: str) -> str | None:
     """Call the C library to compute the package hash."""
     if not os.path.exists(lib_path):
         return None
@@ -75,12 +75,14 @@ def compute_hash(package_path: str, lib_path: str) -> str | None:
         lib.compute_package_hash.argtypes = [
             ctypes.c_char_p,
             ctypes.c_char_p,
+            ctypes.c_char_p,
             ctypes.c_size_t,
         ]
         lib.compute_package_hash.restype = ctypes.c_int
 
         hash_buf = ctypes.create_string_buffer(65)
         ret = lib.compute_package_hash(
+            package_name.encode("utf-8"),
             package_path.encode("utf-8"),
             hash_buf,
             65,
@@ -119,7 +121,7 @@ def main():
                 result["error"] = f"Library not found: {lib_path}"
                 break
 
-            pkg_hash = compute_hash(package_path, lib_path)
+            pkg_hash = compute_hash(package_name, package_path, lib_path)
             if pkg_hash:
                 result["hash"] = pkg_hash
             else:
