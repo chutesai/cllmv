@@ -11,6 +11,8 @@ import os
 from importlib.metadata import distribution, PackageNotFoundError
 from pathlib import Path
 
+from cllmv.base import _find_lib
+
 
 def find_package_path(package_name: str) -> str | None:
     """
@@ -98,10 +100,7 @@ def compute_hash(package_name: str, package_path: str, lib_path: str) -> str | N
 
 def main():
     """Main entry point for python -m cllmv.pkg_hash"""
-    # Find the library path (same logic as base.py)
-    lib_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "lib", "libcllmv.so"
-    )
+    lib_path = _find_lib()
 
     result = {
         "package": None,
@@ -117,8 +116,8 @@ def main():
             result["package"] = package_name
             result["path"] = package_path
 
-            if not os.path.exists(lib_path):
-                result["error"] = f"Library not found: {lib_path}"
+            if not lib_path:
+                result["error"] = "chutes-aegis.so not found"
                 break
 
             pkg_hash = compute_hash(package_name, package_path, lib_path)

@@ -15,9 +15,6 @@ setup(
     license_expression="MIT",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    package_data={
-        "cllmv": ["lib/*.so"],
-    },
     install_requires=[
         "setuptools>=0.75",
     ],
